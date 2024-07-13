@@ -1,0 +1,79 @@
+﻿@{
+    ViewData["Title"] = "CreateTable";
+    var listTable = ViewBag.ListBanAn;
+    string? message = (string?)ViewData["message"];
+}
+<body>
+    <a asp-area="Staff" asp-controller="Staff" asp-action="Index" class="btn btn-primary">Trang chủ</a>
+    @if (message != null)
+    {
+        <div class=@(message == "error" ? "alert alert-warning" : "alert alert-success" ) role="alert" asp-validation-summary="All"></div>
+    }
+    <div class="col-md-6 bg-dark d-flex align-items-center">
+        <div class="p-5 wow fadeInUp" data-wow-delay="0.2s">
+            <h5 class="section-title ff-secondary text-start text-primary fw-normal">Tạo bàn</h5>
+            <form asp-action="BookTable" class="reservation-form">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input type="number" id="NumberOfPeople" name="amount" class="form-control" value="1" min="1" max="5" required>
+                            <label for="NumberOfPeople" class="text-black">Số lượng khách<span>*</span></label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control">
+                            <label id="priceLabel" class="text-black">Giá tiền: VND<span id="totalPrice">100000</span></label>
+                        </div>
+
+                        <script>
+                            const numberOfPeopleInput = document.getElementById("NumberOfPeople");
+                            const totalPriceSpan = document.getElementById("totalPrice");
+
+                            numberOfPeopleInput.addEventListener("change", function () {
+                                const numberOfPeople = parseInt(this.value) || 1; // Handles non-numeric input with a default of 1
+                                const pricePerPerson = 100000; // Customize this value
+                                const totalPrice = numberOfPeople * pricePerPerson;
+
+                                totalPriceSpan.textContent = totalPrice;
+                            });
+
+                        </script>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <select id="seatSelector" name="tableId" class="form-control">
+                                @{
+                                    if (listTable != null)
+                                    {
+                                        foreach (var item in listTable)
+                                        {
+                                            <option>@item.ToString()</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                            <label for="seatSelector" class="text-black">Chọn chỗ ngồi<span>*</span></label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <select id="thanhtoanSelector" name="thanhtoan" class="form-control">
+                                <option>Chuyển khoản</option>
+                                <option>Tiền mặt</option>
+                                <option>Thẻ ngân hàng</option>
+                            </select>
+                            <label for="thanhtoanSelector" class="text-black">Chọn phương thức thanh toán<span>*</span></label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-primary w-100 py-3" type="submit" asp-area="Staff" asp-action="CreateTable" asp-controller="CreateTable">Thanh toán</button>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-primary w-100 py-3" type="submit" asp-area="Staff" asp-action="InHoaDon" asp-controller="CreateTable">Thanh toán và in hóa đơn</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>

@@ -1,0 +1,42 @@
+﻿@model NhaHangBuffetPBL3.Models.Staff
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Nhân viên @Html.DisplayFor(model=>model.Name)</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Họ tên
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            Ngày sinh
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.date_of_birth)
+        </dd>
+        <dt class="col-sm-2">
+           Tài khoản
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Username)
+        </dd>
+        <dt class="col-sm-2">
+            Mật khẩu
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Password)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Cập nhật thông tin</a> |
+    <a asp-action="Index">Quay lại</a>
+</div>

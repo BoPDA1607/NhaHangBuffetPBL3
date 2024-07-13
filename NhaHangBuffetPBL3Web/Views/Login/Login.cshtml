@@ -1,0 +1,40 @@
+﻿@model LoginRecord
+
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Free HTML Login Templates</title>
+    <meta charset="UTF-8">
+    <meta TenMon="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/css/style2.css" />
+</head>
+<body>
+    <div class="container clearfix">
+        <div class="form login">
+            <a class="logo" href="">
+                <img src="~/img/logo.png" alt="Logo" />
+            </a>
+            <form asp-area="" asp-action="Login" asp-controller="Login" asp-route-ReturnUrl="@ViewBag.ReturnUrl">
+                <div class="text-danger" asp-validation-summary="All"></div>
+                <p>
+                    <label asp-for="@Model.Username">Username<span>*</span></label>
+                    <input asp-for="@Model.Username">
+                </p>
+
+                <p>
+                    <label asp-for="@Model.Password">Password<span>*</span></label>
+                    <input asp-for="@Model.Password">
+                </p>
+                <p>
+
+                    <input type="submit" value="Login"/>
+                </p>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

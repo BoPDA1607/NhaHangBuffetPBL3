@@ -1,0 +1,97 @@
+﻿@{
+    var Data = ViewData["Data"] as Bill;
+}
+<a asp-area="Staff" asp-controller="Staff" asp-action="Index" class="btn btn-primary">Trang chủ</a>
+<div class="card">
+    <div class="card-body mx-4">
+        <div class="container">
+            <p class="my-5 mx-5" style="font-size: 50px;">Thanh toán thành công</p>
+            <div class="row">
+                <ul class="list-unstyled">
+                    <li class="text-black" style="font-size: 30px;">Thông tin thanh toán</li>
+
+                </ul>
+            </div>
+            <div class="row">
+                <div class="col-xl-10">
+                    <p>Thời gian thanh toán </p>
+                </div>
+                <div class="col-xl-2">
+                    <p class="float-end">
+                        @Data.BillDate
+                    </p>
+                </div>
+                <hr>
+            </div>
+            <div class="row">
+                <div class="col-xl-10">
+                    <p>Chỗ ngồi </p>
+                </div>
+                <div class="col-xl-2">
+                    <p class="float-end">
+                        @Data.SeatingId
+                    </p>
+                </div>
+                <hr>
+            </div>
+            <div class="row">
+                <div class="col-xl-10">
+                    <p>Số lượng người </p>
+                </div>
+                <div class="col-xl-2">
+                    <p class="float-end">
+                        @Data.NumberOfPeople
+                    </p>
+                </div>
+                <hr>
+            </div>
+            <div class="row">
+                <div class="col-xl-10">
+                    <p>Số tiền trên một người </p>
+                </div>
+                <div class="col-xl-2">
+                    <p class="float-end">
+                        100.000 VND
+                    </p>
+                </div>
+                <hr>
+            </div>
+            <div class="row">
+                <div class="col-xl-10">
+                    <p>Giảm giá</p>
+                </div>
+                <div class="col-xl-2">
+                    <p class="float-end">
+                        0
+                    </p>
+                </div>
+                <hr style="border: 2px solid black;">
+            </div>
+            <div class="row text-black">
+
+                <div class="col-xl-12">
+                    <p class="float-end fw-bold">
+                        Tổng: @(Data.NumberOfPeople * 100).000 VND
+                    </p>
+                </div>
+                <hr style="border: 2px solid black;">
+            </div>
+            <div class="text-center" style="margin-top: 90px;">
+                <button id="printBill">In hóa đơn</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('printBill').addEventListener('click', function () {
+        // Optionally hide the print button during printing
+        document.getElementById('printBill').style.display = 'none';
+
+        // Trigger the print dialog
+        window.print();
+
+        // Optionally show the print button again after printing
+        document.getElementById('printBill').style.display = 'block';
+    });
+</script>

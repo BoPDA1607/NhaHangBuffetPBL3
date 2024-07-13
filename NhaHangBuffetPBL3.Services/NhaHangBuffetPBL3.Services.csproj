@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NhaHangBuffetPBL3.DataAccess\NhaHangBuffetPBL3.DataAccess.csproj" />
+    <ProjectReference Include="..\NhaHangBuffetPBL3.Models\NhaHangBuffetPBL3.Models.csproj" />
+    <ProjectReference Include="..\NhaHangBuffetPBL3.Repository\NhaHangBuffetPBL3.Repository.csproj" />
+  </ItemGroup>
+
+</Project>

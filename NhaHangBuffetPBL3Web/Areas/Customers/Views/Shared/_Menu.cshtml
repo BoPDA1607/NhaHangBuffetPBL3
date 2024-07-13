@@ -1,0 +1,205 @@
+﻿@using System.Web
+@model Menu
+@{
+    if(ViewData["isUsed"] is null)
+    {
+        ViewData["isUsed"] = 0;
+    }
+    var IsUsed = (int)ViewData["isUsed"];
+    if(ViewData["HasItemInCart"] is null)
+    {
+        ViewData["HasItemInCart"] = false;
+    }
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger">
+        @errorMessage
+    </div>
+}
+<meta http-equiv="refresh" content="10">
+<!-- Menu Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                    <h5 class="section-title ff-secondary text-center text-primary fw-normal">Thực đơn</h5>
+                    <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s">
+                        @{
+                            bool isFirstTabActive1 = true;
+                        }
+                        <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5" id="menuTabs">
+                            @for (int i = 0; i < ViewBag.MenuName.Count; i++)
+                            {
+                                <li class="nav-item">
+                                    <a class="d-flex align-items-center text-start mx-3 ms-0 pb-3 @(isFirstTabActive1 ? "active" : "")" data-bs-toggle="pill" href="#tab-@Html.Raw(HttpUtility.UrlEncode(ViewBag.MenuName[i]))" onclick="handleTabClick('@ViewBag.MenuName[i]')">
+                                        @if (ViewBag.MenuName[i] == "meat")
+                                        {
+                                            <i class="fa fa-coffee fa-2x text-primary"></i>
+                                        }
+                                        else if (ViewBag.MenuName[i] == "vegetable")
+                                        {
+                                            <i class="fa fa-carrot fa-2x text-primary"></i>
+                                        }
+                                        else if (ViewBag.MenuName[i] == "rice")
+                                        {
+                                            <i class="fas fa-seedling fa-2x text-primary"></i>
+                                        }
+                                        else if (ViewBag.MenuName[i] == "snack")
+                                        {
+                                            <i class="fas fa-hamburger fa-2x text-primary"></i>
+                                        }
+                                        else if (ViewBag.MenuName[i] == "dessert")
+                                        {
+                                            <i class="fa fa-birthday-cake fa-2x text-primary"></i>
+                                        }
+                                        <div class="ps-3">
+
+                                            <h6 class="mt-n1 mb-0">@ViewBag.MenuName[i]</h6>
+                                        </div>
+                                    </a>
+
+                                </li>
+
+                                isFirstTabActive1 = false;
+                            }
+                        </ul>
+                        @{
+                            var selectedTabIndex = "meat";
+                        }
+                        <div class="tab-content">
+                            @foreach (var category in ViewBag.MenuName)
+                            {
+                                <div id="tab-@category" class="tab-pane fade show p-0 @(category == selectedTabIndex ? "active": "") ">
+                                    <div class="row g-4">
+                                        @foreach (var dat in ((IEnumerable<Food>)ViewBag.Food).Where(mn => mn.Type == category))
+                                        {
+                                            <div class="col-lg-6">
+                                                <div class="d-flex align-items-center">
+                                                    <img class="flex-shrink-0 img-fluid rounded" src="@dat.Image_Url" alt="" style="max-width: 80px; max-height: 80px;">
+                                                    <div class="w-100 d-flex flex-column text-start ps-4">
+                                                        <h5 class="d-flex justify-content-between border-bottom pb-2">
+                                                            <span>@dat.FoodName</span>
+                                                        </h5>
+                                                        <div class="d-flex justify-content-between flex-lg-wrap">
+                                                            <form asp-route-TableId="@ViewBag.SeatingId" asp-route-itemName="@dat.FoodName" asp-route-IdMonAn="@dat.FoodId" asp-action="AddToCart" asp-controller="Table" asp-route-tempData="@category" asp-route-OrderId="@ViewBag.orderId" asp-route-IsUsed="@IsUsed">
+                                                                <input type="number" name="Quantity" class="form-control" min="0" max="100" value="0">
+                                                                <button type="submit" class="btn btn-danger">Thêm món</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6" style="height: 500px; overflow: auto">
+                <table class="table" height="700px">
+                    @{
+                        if ((bool)ViewData["HasItemInCart"])
+                        {
+                            <thead>
+                                <tr>
+                                    <th>Tên món</th>
+                                    <th>Số lượng</th>
+                                    
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                @if ((List<Cart>)ViewData["CartItems"] != null)
+                                {
+                                    foreach (var item in (List<Cart>)ViewData["CartItems"])
+                                    {
+                                        if (item.SeaatingId == ViewBag.SeatingId)
+                                        {
+                                            <tr>
+                                                <td>@item.FoodName</td>
+                                                <td>@item.Quantity</td>
+                                                <td>
+                                                    <form asp-controller="Table" asp-action="RemoveFromCart" asp-route-TableId="@ViewBag.SeatingId" asp-route-IdMonAn="@item.FoodId" asp-route-OrderId="@ViewBag.orderId" asp-route-IsUsed="@IsUsed">
+                                                        <input type="number" name="quantity" class="form-control" min="1" max="@item.Quantity" value="1">
+                                                        <button type="submit" class="btn btn-danger">Xóa món</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                            <form asp-action="Call" asp-controller="Table" asp-route-TableId="@ViewBag.SeatingId" asp-route-OrderId="@ViewBag.orderId" asp-route-IsUsed="@IsUsed">
+                                <button type="submit" class="btn btn-primary">Gọi món</button>
+                                <h6>*Lưu ý: Khi đã nhấn gọi thì không được hủy món, nếu bạn muốn hủy thì phải nộp phạt cho ban quản lý!</h6>
+                            </form>
+                        }
+                        else if(ViewBag.History != null)
+                        {
+                            <thead>
+                                <tr>
+                                    <th align="center">Tên món</th>
+                                    <th align="center">Số lượng</th>
+                                    <th align="center">Thời gian đặt</th>
+                                    <th align="center">Đã hoàn thành</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (((IEnumerable<dynamic>)ViewBag.History).Any())
+                                {
+                                    foreach (var item in ViewBag.History)
+                                    {
+                                        if (item.GetType().GetProperty("seatingId").GetValue(item, null) == ViewBag.SeatingId)
+                                        {
+                                            if(item.GetType().GetProperty("status").GetValue(item, null) == false)
+                                            {
+                                                <tr>
+                                                    <td>@(item.GetType().GetProperty("foodName").GetValue(item, null))</td>
+                                                    <td align="center">@(item.GetType().GetProperty("quantity").GetValue(item, null))</td>
+                                                    <td>@(item.GetType().GetProperty("timeOrder").GetValue(item, null))</td>
+                                                    <td align="center"><i class="fas fa-times"></i></td>
+                                                </tr>
+                                            }
+                                            else
+                                            {   
+                                                <tr>
+                                                    <td>@(item.GetType().GetProperty("foodName").GetValue(item, null))</td>
+                                                    <td align="center">@(item.GetType().GetProperty("quantity").GetValue(item, null))</td>
+                                                    <td>@(item.GetType().GetProperty("timeOrder").GetValue(item, null))</td>
+                                                    <td align="center"><i class="fas fa-check"></i></td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        }
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Menu End -->
+<script>
+    // Function to handle tab click and store selected tab index
+    function handleTabClick(menuType) {
+        localStorage.setItem('selectedTabIndex', menuType);
+    }
+
+    // Function to retrieve stored tab index and activate corresponding tab
+    window.onload = function () {
+        selectedTabIndex = localStorage.getItem('selectedTabIndex');
+        if (selectedTabIndex) {
+            var tabLink = document.querySelector('a[href="#tab-' + selectedTabIndex + '"]');
+            if (tabLink) {
+                tabLink.click();
+            }
+        }
+    };
+</script>
+

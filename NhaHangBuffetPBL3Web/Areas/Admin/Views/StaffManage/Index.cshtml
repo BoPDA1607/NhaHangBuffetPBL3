@@ -1,0 +1,52 @@
+﻿@model IEnumerable<NhaHangBuffetPBL3.Models.Staff>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<p>
+    <a asp-action="Create">Thêm nhân viên</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Họ tên
+            </th>
+            <th>
+                Ngày sinh
+            </th>
+            <th>
+                Tài khoản
+            </th>
+            <th>
+                Mật khẩu
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.date_of_birth)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Username)
+                </td>
+                <td>
+                    ****
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Chỉnh sửa</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Thông tin cá nhân</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Xóa nhân viên</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

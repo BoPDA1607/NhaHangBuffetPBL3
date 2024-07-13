@@ -1,0 +1,49 @@
+﻿@model NhaHangBuffetPBL3.Models.Ingredient
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>@Html.DisplayFor(model=>model.Ingredient_name)</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Ingredient_id" />
+            <div class="form-group">
+                <label asp-for="Ingredient_name" class="control-label">Tên nguyên liệu</label>
+                <input asp-for="Ingredient_name" class="form-control" />
+                <span asp-validation-for="Ingredient_name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Stored_quantity" class="control-label">Số lượng dự trữ</label>
+                <input asp-for="Stored_quantity" class="form-control" />
+                <span asp-validation-for="Stored_quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order_quantity" class="control-label">Số lượng đặt hàng</label>
+                <input asp-for="Order_quantity" class="form-control" />
+                <span asp-validation-for="Order_quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Unit" class="control-label">Đơn vị</label>
+                <input asp-for="Unit" class="form-control" />
+                <span asp-validation-for="Unit" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Lưu" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Quay lại</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

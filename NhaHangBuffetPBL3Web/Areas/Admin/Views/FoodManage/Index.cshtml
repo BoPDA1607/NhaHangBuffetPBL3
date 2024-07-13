@@ -1,0 +1,45 @@
+﻿@model IEnumerable<NhaHangBuffetPBL3.Models.Food>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<p>
+    <a asp-action="Create">Thêm món ăn</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Tên món
+            </th>
+            <th>
+                Phân loại
+            </th>
+            <th>
+                Hình ảnh
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FoodName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                    <img class="flex-shrink-0 img-fluid rounded" src="@Html.DisplayFor(modelItem=>item.Image_Url)" alt="" style="max-width: 80px; max-height: 80px;">
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.FoodId">Chỉnh sửa</a> |
+                <a asp-action="Details" asp-route-id="@item.FoodId">Chi tiết món</a> |
+                <a asp-action="Delete" asp-route-id="@item.FoodId">Xóa</a> |
+                <a asp-action="Index" asp-controller="FoodIngredientManage" asp-route-FoodId="@item.FoodId">Chỉnh sửa nguyên liệu</a>
+            </td> 
+        </tr>
+}
+    </tbody>
+</table>

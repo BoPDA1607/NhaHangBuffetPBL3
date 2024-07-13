@@ -1,0 +1,137 @@
+﻿@addTagHelper *,Microsoft.AspNetCore.MVC
+@model IEnumerable<NhaHangBuffetPBL3.Models.Orders>
+@{
+    ViewData["Title"] = "Menu Page";
+    var IsUsed = (int)ViewData["isUsed"];
+    double? timeNow = (double?)ViewData["timeNow"];
+
+    var order = ViewData["Orders"] as IEnumerable<Orders> ?? null;
+    var orderTimeString = "";
+    if (order != null)
+    {
+        foreach (var item in order)
+        {
+            if (item.OrderId == ViewBag.orderId)
+            {
+                var orderTime = (DateTime)item.SeatingDate;
+                orderTimeString = orderTime.ToString("HH:mm");
+            }
+        }
+
+    }
+    var seatingId = @Model?.Where(p => p.OrderId == ViewBag.orderId).Select(p => p.SeatingId).FirstOrDefault();
+}
+
+<style>
+    #div1 {
+        font-size: 48px;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+@if (TempData["ErrorOrder"] is string errorMessage)
+{
+    <div class="alert alert-danger">
+        @errorMessage
+    </div>
+}
+<!-- Navbar & Hero Start -->
+<div class="container-xxl position-relative p-0">
+    @await Html.PartialAsync("_Navigation")
+
+    <div class="container-xxl py-5 bg-dark hero-header mb-5">
+        <div class="container text-center my-5 pt-5 pb-4">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Thực đơn</h1>
+        </div>
+    </div>
+</div>
+<!-- Navbar & Hero End -->
+@{
+    double ketthuc = 3600.0;
+    if (ViewBag.orderId == null || (timeNow >= ketthuc && timeNow != null) || IsUsed == -1)
+    {
+        <form method="post" asp-area="Customers" asp-action="Check" asp-controller="Table">
+            <input type="text" name="code" placeholder="Nhập mã Order của bạn" />
+            <button type="submit" class="btn btn-primary">Xác nhận</button>
+        </form>
+    }
+    else if (ViewBag.orderId != null && (timeNow >= ketthuc && timeNow != null))
+    {
+        <form method="post" asp-area="Customers" asp-action="Check" asp-controller="Table">
+            <input type="text" name="code" placeholder="Nhập mã Order của bạn" />
+            <button type="submit" class="btn btn-primary">Xác nhận</button>
+        </form>
+    }
+    else if (IsUsed == 1)
+    {
+        <div style="display:flex;align-items:center; justify-content:center; margin-bottom: 20px;">
+            <div id="div1" class="fa"></div>
+            <div id="countdown-@seatingId"></div>
+        </div>
+        <script>
+            function hourglass() {
+                var a;
+                a = document.getElementById("div1");
+                a.innerHTML = "&#xf251;";
+                setTimeout(function () {
+                    a.innerHTML = "&#xf252;";
+                }, 1000);
+                setTimeout(function () {
+                    a.innerHTML = "&#xf253;";
+                }, 2000);
+            }
+
+            hourglass();
+            setInterval(hourglass, 3000);
+
+
+            startCountdown('@orderTimeString', 1, '@seatingId');
+
+            function startCountdown(orderTime, durationHours, tableId) {
+                let remainingTime;
+
+                const orderTimeParts = orderTime.split(':');
+                const orderTimeDate = new Date();
+                orderTimeDate.setHours(parseInt(orderTimeParts[0], 10));
+                orderTimeDate.setMinutes(parseInt(orderTimeParts[1], 10));
+                orderTimeDate.setSeconds(0);
+
+                const now = new Date();
+                const elapsedTime = now - orderTimeDate;
+                const totalDuration = durationHours * 60 * 60 * 1000;
+                remainingTime = totalDuration - elapsedTime;
+                console.log('Remaining time: ' + remainingTime);
+
+
+                function updateCountdown() {
+                    if (remainingTime <= 0) {
+                        document.getElementById('countdown-' + tableId).innerHTML = "Đã hết thời gian!!!"
+                        return;
+                    }
+
+                    let hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    let minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+                    let seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+                    hours = checkTime(hours);
+                    minutes = checkTime(minutes);
+                    seconds = checkTime(seconds);
+
+                    document.getElementById('countdown-' + tableId).innerHTML = hours + ":" + minutes + ":" + seconds;
+
+                    remainingTime -= 1000;
+
+                    setTimeout(updateCountdown, 1000);
+                }
+
+                updateCountdown();
+            }
+
+            function checkTime(i) {
+                if (i < 10) { i = "0" + i };
+                return i;
+            }
+        </script>
+        @await Html.PartialAsync("_Menu")
+    }
+    <!-- Menu End -->
+}

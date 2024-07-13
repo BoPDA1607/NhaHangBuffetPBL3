@@ -1,0 +1,18 @@
+﻿@model NhaHangBuffetPBL3.Models.Table
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Bạn có chắc chắn muốn xóa bàn @Html.DisplayFor(model=>model.SeatingId)?</h3>
+<div>
+    <h1>Bạn có chắc chắn muốn xóa bàn @Html.DisplayFor(model => model.SeatingId)?</h1>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="SeatingId" />
+        <input type="submit" value="Xóa" class="btn btn-danger" /> |
+        <a asp-action="Index">Quay lại</a>
+    </form>
+</div>

@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Payment Fail";
+}
+<!-- Navbar & Hero Start -->
+<div class="container-xxl position-relative p-0">
+    @await Html.PartialAsync("_Navigation")
+
+    <div class="container-xxl py-5 bg-dark hero-header mb-5">
+        <div class="container text-center my-5 pt-5 pb-4">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Đặt bàn Online</h1>
+        </div>
+    </div>
+</div>
+<!-- Navbar & Hero End -->
+<body>
+    <div class="container-fluid contact py-5">
+        <div class="container">
+            <div class="p-5 bg-light rounded">
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="text-center mx-auto" style="max-width: 700px;">
+                            <h1 class="text-primary">Lỗi đặt bàn</h1>
+                            <h3 class="text-danger">@TempData["Message"]</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

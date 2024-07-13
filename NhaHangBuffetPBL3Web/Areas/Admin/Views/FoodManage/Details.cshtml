@@ -1,0 +1,36 @@
+﻿@model NhaHangBuffetPBL3.Models.Food
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>@Html.DisplayFor(model=>model.FoodName)</h1>
+
+<div>
+    <h4>@Html.DisplayFor(model => model.FoodName)</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Tên món
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FoodName)
+        </dd>
+        <dt class = "col-sm-2">
+            Phân loại
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+        <dt class = "col-sm-2">
+            Hình ảnh
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Image_Url)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.FoodId">Chỉnh sửa</a> |
+    <a asp-action="Index">Quay lại</a>
+</div>

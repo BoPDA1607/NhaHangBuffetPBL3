@@ -1,0 +1,104 @@
+﻿@model BookingRecord
+
+@{
+    ViewData["Title"] = "Booking";
+}
+
+
+
+<!-- Navbar & Hero Start -->
+<div class="container-xxl position-relative p-0">
+    @await Html.PartialAsync("_Navigation")
+
+    <div class="container-xxl py-5 bg-dark hero-header mb-5">
+        <div class="container text-center my-5 pt-5 pb-4">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Đặt bàn Online</h1>
+        </div>
+    </div>
+</div>
+<!-- Navbar & Hero End -->
+<!-- Reservation Start -->
+<div class="container-xxl py-5 px-0 wow fadeInUp" data-wow-delay="0.1s">
+    <div class="row g-0">
+        <div class="col-md-6">
+            <div class="video">
+                <button type="button" class="btn-play" data-bs-toggle="modal" data-src="https://www.youtube.com/embed/DWRcNpR6Kdc" data-bs-target="#videoModal">
+                    <span></span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6 bg-dark d-flex align-items-center">
+            <div class="p-5 wow fadeInUp" data-wow-delay="0.2s">
+                <h1 class="text-white mb-4">Đặt bàn online dễ dàng</h1>
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <form asp-action="BookTable" method="post" class="reservation-form">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="email" id="email" name="email" class="form-control" required>
+                                <label for="email" class="text-black">Email của bạn<span>*</span></label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating date">
+                                <input type="datetime-local" id="SeatingDate" name="SeatingDate" class="form-control datetimepicker-input" required>
+                                <label for="SeatingDate" class="text-black">Chọn ngày bạn muốn ăn<span>*</span></label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="number" id="NumberOfPeople" name="NumberOfPeople" class="form-control" value="1" min="1" required>
+                                <label for="NumberOfPeople" class="text-black">Số người<span>*</span></label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" disabled>
+                                <label id="priceLabel" class="text-black">Giá tiền: VND<span id="totalPrice">100000</span></label>
+                            </div>
+
+                            <script>
+                                const numberOfPeopleInput = document.getElementById("NumberOfPeople");
+
+                                const totalPriceSpan = document.getElementById("totalPrice");
+
+                                numberOfPeopleInput.addEventListener("change", function () {
+                                    const numberOfPeople = parseInt(this.value) || 1; // Handles non-numeric input with a default of 1
+                                    const pricePerPerson = 100000; // Customize this value
+                                    const totalPrice = numberOfPeople * pricePerPerson;
+
+                                    totalPriceSpan.textContent = totalPrice;
+                                });
+
+                            </script>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <select id="seatSelector" name="TableId" class="form-control">
+                                    @if (ViewBag.Item != null)
+                                    {
+                                        @foreach (var item in ViewBag.Item)
+                                        {
+                                            <option>@item.ToString()</option>
+                                        }
+                                    }
+                                </select>
+                                <label for="seatSelector" class="text-black">Chỗ ngồi mong muốn<span>*</span></label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary w-100 py-3" type="submit" asp-action="BookTable" asp-controller="Booking">Thanh toán VNPay</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reservation Start -->
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+
+

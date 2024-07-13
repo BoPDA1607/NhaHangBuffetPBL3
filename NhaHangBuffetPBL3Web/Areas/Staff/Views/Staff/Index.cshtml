@@ -1,0 +1,231 @@
+﻿@model IEnumerable<NhaHangBuffetPBL3.Models.Table>
+@{
+    var temp = ViewData["Order"] as IEnumerable<Orders>;
+}
+<meta http-equiv="refresh" content="10">
+<head>
+    <style>
+        h3 {
+            text-align: right;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            background-color: red;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+
+        /* Styling for the vertical scrollable table */
+        table.scrollable-table {
+            max-height: 300px; /* Define the maximum height of the table */
+            overflow-y: auto; /* Enable vertical scrolling */
+            border-collapse: collapse; /* Optional: Collapse borders */
+        }
+
+            table.scrollable-table th, table.scrollable-table td {
+                border: 1px solid #ccc; /* Optional: Add cell borders */
+                padding: 8px; /* Optional: Add cell padding */
+                text-align: left; /* Optional: Align text to the left */
+            }
+
+        a {
+            text-align: right;
+        }
+
+        button {
+            position: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="row">
+        <div class="col-6">
+            <a asp-area="Staff" asp-controller="CreateTable" asp-action="Index" class="btn btn-outline-primary form-control">Tạo bàn</a>
+        </div>
+        <div class="col-6">
+            <a asp-area="Staff" asp-controller="Revenue" asp-action="Index" class="btn btn-outline-secondary form-control">Xem doanh thu</a>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-7">
+            <h3>Danh sách đặt món</h3>
+        </div>
+        <div class="col-5 d-flex justify-content-end">
+            <a id="deleteTableLink" class="btn btn-outline-secondary">Hủy bàn</a>
+        </div>
+    </div>
+
+    @{
+        bool isFirstTabActive = true;
+        string status = "trống";
+    }
+    <ul class="nav nav-tabs">
+        @foreach (var item in Model)
+        {
+            var tableId = item.SeatingId;
+            var orders = ViewData[$"Ban{tableId}"] as IEnumerable<dynamic>;
+            var record = item.Status;
+            int pendingOrdersCount = orders?.Count(order => order.GetType().GetProperty("status").GetValue(order, null) == false) ?? 0;
+            var order = temp.FirstOrDefault(p => p.SeatingId == tableId && p.IsUsed == 1 && DateTime.Now.Subtract((DateTime)p.SeatingDate).TotalSeconds < 3600);
+            string orderTimeString = order != null ? ((DateTime)order.SeatingDate).ToString("HH:mm") : null;
+            <li class="nav-item">
+                <a class="nav-link @(isFirstTabActive ? "active" : "")" id="table-@tableId-tab" data-bs-toggle="pill" href="#tab-@tableId" role="tab" onclick="handleTabClick('@tableId')">
+                    Bàn @tableId <br />
+                    @if (pendingOrdersCount > 0)
+                    {
+                        <span class="badge">@pendingOrdersCount</span>
+                    }
+                    @if (record == "waiting")
+                    {
+                        @status
+                    }
+                    else if (orderTimeString != null)
+                    {
+                        <span id="countdown-@tableId"></span>
+                        <form id="deleteForm-@tableId" style="display:none;">
+                        </form>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                var orderTime = '@orderTimeString';
+                                startCountdown(orderTime, 1, '@tableId');            
+                            });
+                        </script>
+                    }
+                </a>
+            </li>
+            isFirstTabActive = false;
+        }
+    </ul>
+    @{
+        int selectedTabIndex = 1;
+    }
+    <div class="tab-content">
+        @foreach (var tableId in Model.Select(p => p.SeatingId).ToList())
+        {
+            var orders = ViewData[$"Ban{tableId}"] as IEnumerable<dynamic>;
+            <div id="tab-@tableId" class="tab-pane fade show p-0 @((int)tableId == selectedTabIndex ? "active" : "")">
+                <div class="row g-4" style="height: 200px; overflow: auto">
+                    <table class="scrollable-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">STT</th>
+                                <th scope="col">Tên món</th>
+                                <th scope="col">Số lượng</th>
+                                <th scope="col">Thời gian</th>
+                                <th scope="col">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        @{
+                            int i = 0;
+                        }
+                        @if (orders != null)
+                        {
+                            @foreach (var order in orders)
+                            {
+                                if (order.GetType().GetProperty("status").GetValue(order, null) == false)
+                                {
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">@(i + 1)</th>
+                                            <td>@(order.GetType().GetProperty("foodName").GetValue(order, null))</td>
+                                            <td>@(order.GetType().GetProperty("quantity").GetValue(order, null))</td>
+                                            <td>@(order.GetType().GetProperty("timeOrder").GetValue(order, null))</td>
+                                            <td>Đang chờ</td>
+                                            <td>
+                                                <form asp-controller="Staff" asp-action="CompleteOrder" asp-route-thoigian="@(order.GetType().GetProperty("timeOrder").GetValue(order, null))" asp-route-OrderId="@(order.GetType().GetProperty("orderId").GetValue(order, null))">
+                                                    <button type="submit" class="btn btn-danger">Hoàn thành</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                }
+                                i++;
+                            }
+                        }
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</body>
+<script>
+    function handleTabClick(records) {
+        localStorage.setItem('selectedTabIndex', records);
+    }
+
+    window.onload = function () {
+        selectedTabIndex = localStorage.getItem('selectedTabIndex');
+        if (selectedTabIndex) {
+            var tabLink = document.querySelector('a[href="#tab-' + selectedTabIndex + '"]');
+            if (tabLink) {
+                tabLink.click();
+            }
+            updateDeleteTableLink(selectedTabIndex);
+        }
+    };
+
+    function updateDeleteTableLink(selectedTabIndex) {
+        var deleteTableLink = document.getElementById('deleteTableLink');
+        deleteTableLink.href = '@Url.Action("DeleteTable", "Staff", new { seatingId = "__seatingId__" })'.replace('__seatingId__', selectedTabIndex);
+    }
+
+    function startCountdown(orderTime, durationHours, tableId) {
+        const orderTimeParts = orderTime.split(':');
+        const orderTimeDate = new Date();
+        orderTimeDate.setHours(parseInt(orderTimeParts[0], 10));
+        orderTimeDate.setMinutes(parseInt(orderTimeParts[1], 10));
+        orderTimeDate.setSeconds(0);
+
+        const now = new Date();
+        const elapsedTime = now - orderTimeDate;
+        const totalDuration = durationHours * 60 * 60 * 1000;
+        let remainingTime = totalDuration - elapsedTime;
+        console.log('Remaining time: ' + remainingTime);
+
+        function updateCountdown() {
+            if (remainingTime <= 0) {
+                deleteTable(tableId);
+                return;
+            }
+
+            let hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            let minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+            let seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+            hours = checkTime(hours);
+            minutes = checkTime(minutes);
+            seconds = checkTime(seconds);
+
+            document.getElementById('countdown-' + tableId).innerHTML = hours + ":" + minutes + ":" + seconds;
+
+            remainingTime -= 1000;
+
+            setTimeout(updateCountdown, 1000);
+        }
+
+        updateCountdown();
+    }
+
+    function checkTime(i) {
+        if (i < 10) { i = "0" + i };
+        return i;
+    }
+    function deleteTable(tableId) {
+        var urlTemplate = '@Url.Action("DeleteTable", "Staff", new { seatingId = "__seatingId__" })'; //RedirectToAction
+        var url = urlTemplate.replace('__seatingId__', tableId);
+        var form = document.getElementById('deleteForm-' + tableId);
+        form.action = url;
+        form.method = 'post';
+        form.submit();
+        console.log("Form action URL: " + form.action);
+    }
+</script>

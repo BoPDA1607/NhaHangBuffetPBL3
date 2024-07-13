@@ -1,0 +1,171 @@
+﻿@model IEnumerable<NhaHangBuffetPBL3.Models.Ingredient>
+
+@{
+    ViewData["Title"] = "Index";
+    var records = ViewData["FoodInfo"] as List<FoodIngredient>;
+    if (records == null)
+    {
+        records = new List<FoodIngredient>();
+    }
+    var foodName = ViewData["FoodName"] as string;
+    var foodId = ViewData["FoodId"] as int?;
+}
+<head>
+    <style>
+        h3 {
+            text-align: center;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <h3>Danh sách nguyên liệu của món @foodName</h3>
+    @if (TempData["Error"] is string errorMessage)
+    {
+        <div class="alert alert-danger">
+            @errorMessage
+        </div>
+    }
+    @if (records.Count > 0)
+    {
+        <form asp-area="Admin" asp-controller="FoodIngredientManage" asp-action="Update" method="post">
+            <table id="ingredientsTable" class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Tên nguyên liệu</th>
+                        <th scope="col">Số lượng dùng</th>
+                        <th scope="col">Đơn vị</th>
+                    </tr>
+                </thead>
+                <tbody id="ingredientsBody">
+                    @{
+                        int i = 0;
+                    }
+                    @foreach (var record in records)
+                    {
+                        <tr>
+                            <th scope="row">@(i + 1)</th>
+
+                            <td>
+                                <select id="TenNL" name="TableId" class="form-control">
+                                    @foreach (var item in Model)
+                                    {
+                                        @if(item.Ingredient_id == record.Ingredient_id)
+                                        {
+                                            <option value='{"ingredient_id":"@item.Ingredient_id","Unit":"@item.Unit"}' selected>@item.Ingredient_name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value='{"ingredient_id":"@item.Ingredient_id","Unit":"@item.Unit"}'>@item.Ingredient_name</option>
+                                        }
+                                    }
+                                </select>
+                            </td>
+                            <td><input type="number" step="0.01" name="[@i].Use_quantity" value="@(record.Use_quantity)" /></td>
+                            <td><label class="text-black">Đơn vị: <input type="text" name="[@i].Unit" id="Unit" value="@record.Unit" readonly/></label></td>
+                            <td><input type="hidden" name="[@i].foodId" value="@foodId" /></td>
+                            <td><input type="hidden" id="ingredient_id" name="[@i].Ingredient_id" value="@record.Ingredient_id"/></td>
+                            <td>
+                                <button asp-action="Delete" asp-area="Admin" asp-controller="FoodIngredientManage" asp-route-FoodId="@foodId" asp-route-ingredient_id="@record.Ingredient_id" type="submit" class="btn btn-danger">Xoá nguyên liệu</button>
+                            </td>
+                        </tr>
+                        
+                        i++;
+                    }
+                    <tr>
+                        <th scope="row">@(i + 1)</th>
+                        <td>
+                            <select id="TenNL" name="TableId" class="form-control">
+                                @foreach (var item in Model)
+                                {
+                                    < id="MaNL">
+                                    <option value='{"ingredient_id":"@item.Ingredient_id","Unit":"@item.Unit"}'>@item.Ingredient_name</option>
+                                    </>
+                                }
+                            </select>
+                        </td>
+                        <td><input type="number" step="0.01" name="[@i].Use_quantity" value="" /></td>
+                        <td><label class="text-black">Đơn vị: <input type="text" name="[@i].Unit" id="Unit" readonly /></label></td>
+                        <td><input type="hidden" name="[@i].foodId" value="@foodId" /></td>
+                        <td><input type="hidden" id="ingredient_id" name="[@i].Ingredient_id" /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <input type="submit" value="Cập nhật" class="btn btn-outline-secondary form-control" />
+        </form>
+    }
+    else
+    {
+        <form asp-area="Admin" asp-controller="FoodIngredientManage" asp-action="Update" method="post">
+            <table id="ingredientsTable" class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Tên nguyên liệu</th>
+                        <th scope="col">Số lượng dùng</th>
+                        <th scope="col">Đơn vị</th>
+                    </tr>
+                </thead>
+                @{int i =0;}
+                <tbody id="ingredientsBody">
+                    <tr>
+                        <th scope="row">@(i + 1)</th>
+                        <td>
+                            <select id="TenNL" name="TableId" class="form-control">
+                                @foreach (var item in Model)
+                                {
+                                    < id="MaNL">
+                                        <option value='{"ingredient_id":"@item.Ingredient_id","Unit":"@item.Unit"}' selected="">@item.Ingredient_name</option>
+                                    </>
+                                }
+                            </select>
+                        </td>
+                        <td><input type="number" step="0.01" name="[@i].Use_quantity" value="" /></td>
+                        <td><label class="text-black">Đơn vị: <input type="text" name="[@i].Unit" id="Unit" readonly/></label></td>
+                        <td><input type="hidden" name="[@i].foodId" value="@foodId" /></td>
+                        <td><input type="hidden" id="ingredient_id" name="[@i].Ingredient_id" /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <input type="submit" value="Cập nhật" class="btn btn-outline-secondary form-control" />
+        </form>
+    }
+    <a asp-area="Admin" asp-controller="FoodManage" asp-action="Index" class="btn btn-outline-primary form-control">Quay về</a>
+
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // Function to update unit and id fields based on selected option
+        function handleSelectChange(event) {
+            const selectElement = event.target;  // Get the specific select that changed
+
+            // Find the corresponding unit and id inputs in the same row
+            const unitInput = selectElement.closest('tr').querySelector('input[name$=".Unit"]');
+            const idInput = selectElement.closest('tr').querySelector('input[name$=".Ingredient_id"]');
+
+            try {
+                const parsedValue = JSON.parse(selectElement.value);
+                unitInput.value = parsedValue.Unit;
+                idInput.value = parsedValue.ingredient_id;
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                return;
+            }
+        }
+
+        // Attach the event listener to the table body (a parent of all select elements)
+        document.getElementById('ingredientsBody').addEventListener('change', function (event) {
+            // Check if the event originated from a select with the ID 'TenNL'
+            if (event.target.id === 'TenNL') {
+                handleSelectChange(event);
+            }
+        });
+    });
+</script>

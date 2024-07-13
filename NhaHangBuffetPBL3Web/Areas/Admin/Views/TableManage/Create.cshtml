@@ -1,0 +1,22 @@
+﻿@model NhaHangBuffetPBL3.Models.Table
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Tạo bàn</h4>
+<hr />
+<div>
+    <a asp-action="Create">Tạo bàn</a>
+          
+</di>
+
+<div>
+    <a asp-action="Index">Quay lại</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

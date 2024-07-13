@@ -1,0 +1,138 @@
+﻿@model BookingRecord
+@{
+    ViewData["Title"] = "Payment Success";
+}
+<!-- Navbar & Hero Start -->
+<div class="container-xxl position-relative p-0">
+    @await Html.PartialAsync("_Navigation")
+
+    <div class="container-xxl py-5 bg-dark hero-header mb-5">
+        <div class="container text-center my-5 pt-5 pb-4">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Đặt bàn Online</h1>
+        </div>
+    </div>
+</div>
+<!-- Navbar & Hero End -->
+    <div class="card">
+        <div id="HoaDon" class="card-body mx-4">
+            <div class="container">
+                <p class="my-5 mx-5" style="font-size: 50px;">Thanh toán thành công</p>
+                <div class="row">
+                    <ul class="list-unstyled">
+                        <li class="text-black" style="font-size: 30px;">Thông tin thanh toán</li>
+                    </ul>
+                    <hr>
+                    <div class="col-xl-10">
+                        <p>Thông tin người đặt</p>
+                    </div>
+                    <div class="col-xl-2">
+                        <p class="float-end">
+                            @Model.email
+                        </p>
+                    </div>
+                    <hr>
+                </div>
+                <div class="row">
+                    <div class="col-xl-10">
+                        <p>Thời gian thanh toán </p>
+                    </div>
+                    <div class="col-xl-2">
+                        <p class="float-end">
+                            @(ViewData["paymentDate"])
+                        </p>
+                    </div>
+                    <hr>
+                </div>
+                <div class="row">
+                    <div class="col-xl-10">
+                        <p>Chỗ ngồi </p>
+                    </div>
+                    <div class="col-xl-2">
+                        <p class="float-end">
+                            @Model.TableId
+                        </p>
+                    </div>
+                    <hr>
+                </div>
+                <div class="row">
+                    <div class="col-xl-10">
+                        <p>Ngày ngồi </p>
+                    </div>
+                    <div class="col-xl-2">
+                        <p class="float-end">
+                            @Model.SeatingDate
+                        </p>
+                    </div>
+                    <hr>
+                </div>
+                <div class="row">
+                    <div class="col-xl-10">
+                        <p>Số lượng người </p>
+                    </div>
+                    <div class="col-xl-2">
+                        <p class="float-end">
+                            @Model.NumberOfPeople
+                        </p>
+                    </div>
+                    <hr>
+                </div>
+                <div class="row">
+                    <div class="col-xl-10">
+                        <p>Số tiền trên một người </p>
+                    </div>
+                    <div class="col-xl-2">
+                        <p class="float-end">
+                            100.000 VND
+                        </p>
+                    </div>
+                    <hr>
+                </div>
+                <div class="row">
+                    <div class="col-xl-10">
+                        <p>Giảm giá</p>
+                    </div>
+                    <div class="col-xl-2">
+                        <p class="float-end">
+                            0
+                        </p>
+                    </div>
+                    <hr style="border: 2px solid black;">
+                </div>
+                <div class="row text-black">
+                    <div class="col-xl-12">
+                        <p class="float-end fw-bold">
+                            Tổng: @(Model.NumberOfPeople * 100).000 VND
+                        </p>
+                    </div>
+                    <hr style="border: 2px solid black;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center" style="margin-top: 90px;">
+        <button id="saveBill">Lưu hóa đơn</button>
+    </div
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+    document.getElementById("saveBill").addEventListener("click", function () {
+        // Capture the content of the bill site
+        html2canvas(document.getElementById("HoaDon")).then(function (canvas) {
+            // Convert canvas to image
+            var imageData = canvas.toDataURL("image/png");
+
+            // Create a link element
+            var link = document.createElement('a');
+            link.download = "HoaDonThanhToan.png";
+
+            // Set the href attribute to the data URL
+            link.href = imageData;
+
+            // Simulate a click on the link to trigger the download
+            document.body.appendChild(link);
+            link.click();
+
+            // Clean up
+            document.body.removeChild(link);
+        });
+    });
+</script>

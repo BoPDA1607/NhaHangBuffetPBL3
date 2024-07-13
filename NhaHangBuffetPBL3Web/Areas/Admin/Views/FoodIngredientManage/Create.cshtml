@@ -1,0 +1,48 @@
+﻿@model NhaHangBuffetPBL3.Models.FoodIngredient
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>NguyenLieuMonAn</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FoodId" class="control-label"></label>
+                <input asp-for="FoodId" class="form-control" />
+                <span asp-validation-for="FoodId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ingredient_id" class="control-label"></label>
+                <input asp-for="Ingredient_id" class="form-control" />
+                <span asp-validation-for="Ingredient_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Use_quantity" class="control-label"></label>
+                <input asp-for="Use_quantity" class="form-control" />
+                <span asp-validation-for="Use_quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Unit" class="control-label"></label>
+                <input asp-for="Unit" class="form-control" />
+                <span asp-validation-for="Unit" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
